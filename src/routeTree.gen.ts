@@ -9,9 +9,15 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ScenesRouteImport } from './routes/scenes'
 import { Route as BibleRouteImport } from './routes/bible'
 import { Route as IndexRouteImport } from './routes/index'
 
+const ScenesRoute = ScenesRouteImport.update({
+  id: '/scenes',
+  path: '/scenes',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BibleRoute = BibleRouteImport.update({
   id: '/bible',
   path: '/bible',
@@ -26,31 +32,42 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/bible': typeof BibleRoute
+  '/scenes': typeof ScenesRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/bible': typeof BibleRoute
+  '/scenes': typeof ScenesRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/bible': typeof BibleRoute
+  '/scenes': typeof ScenesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/bible'
+  fullPaths: '/' | '/bible' | '/scenes'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/bible'
-  id: '__root__' | '/' | '/bible'
+  to: '/' | '/bible' | '/scenes'
+  id: '__root__' | '/' | '/bible' | '/scenes'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BibleRoute: typeof BibleRoute
+  ScenesRoute: typeof ScenesRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/scenes': {
+      id: '/scenes'
+      path: '/scenes'
+      fullPath: '/scenes'
+      preLoaderRoute: typeof ScenesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/bible': {
       id: '/bible'
       path: '/bible'
@@ -71,6 +88,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BibleRoute: BibleRoute,
+  ScenesRoute: ScenesRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
